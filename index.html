@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이세상모든쇼츠 | Trend Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-50 font-sans">
+
+    <header class="bg-white border-b sticky top-0 z-50 px-4 py-4 shadow-sm">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-black text-red-600 italic">YOUTUBE TREND ANALYZER.</h1>
+            <div id="status" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Online</div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 md:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-10">
+            <div class="flex bg-white rounded-2xl p-1 shadow-sm border border-slate-200">
+                <button onclick="updateParams('region','KR')" id="r-KR"
+                    class="reg-btn px-6 py-2 rounded-xl text-sm font-bold bg-red-600 text-white">KR</button>
+                <button onclick="updateParams('region','US')" id="r-US"
+                    class="reg-btn px-6 py-2 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-50">US</button>
+                <button onclick="updateParams('region','JP')" id="r-JP"
+                    class="reg-btn px-6 py-2 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-50">JP</button>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <select onchange="updateParams('period', this.value)"
+                    class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold outline-none shadow-sm">
+                    <option value="daily">Daily Growth</option>
+                    <option value="weekly">Weekly Growth</option>
+                    <option value="monthly">Monthly Growth</option>
+                </select>
+
+                <button onclick="toggleShorts()" id="shorts-btn"
+                    class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all">
+                    <i class="fas fa-bolt text-slate-300" id="shorts-icon"></i>
+                    <span class="text-sm font-bold text-slate-600">Shorts Only</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        </div>
+    </main>
+
+    <script>
+        const API_URL = "본인의_WORKER_URL";
+        let params = { region: 'KR', period: 'daily', type: 'all' };
+
+        async function load() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '<div class="col-span-full text-center py-20 font-bold text-slate-300 animate-pulse">Analyzing Trends...</div>';
+
+            try {
+                const res = await fetch(`${API_URL}/?region=${params.region}&period=${params.period}&type=${params.type}`);
+                const { data } = await res.json();
+                render(data);
+            } catch (e) { grid.innerHTML = 'Error loading data.'; }
+        }
+
+        function render(items) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = items.map((v, i) => `
+                <a href="https://www.youtube.com/${v.is_shorts ? 'shorts' : 'watch?v='}${v.video_id}" target="_blank" class="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 relative">
+                    <div class="relative aspect-video overflow-hidden">
+                        <img src="https://i.ytimg.com/vi/${v.video_id}/mqdefault.jpg" class="w-full h-full object-cover">
+                        ${v.is_shorts ? '<span class="absolute top-3 right-3 bg-red-600 text-[10px] font-black text-white px-2 py-1 rounded-full shadow-lg">SHORTS</span>' : ''}
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center"><i class="fas fa-play text-red-600 ml-1"></i></div>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="text-[10px] font-black text-slate-400 mb-1 uppercase tracking-widest">${v.channel}</div>
+                        <h3 class="font-bold text-sm text-slate-800 line-clamp-2 mb-4 h-10 group-hover:text-red-600">${v.title}</h3>
+                        <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                            <span class="text-[10px] font-bold text-slate-300">#${i + 1} TRENDING</span>
+                            <span class="text-sm font-black text-green-500">+${(v.growth / 1000).toFixed(1)}K views</span>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function updateParams(key, val) {
+            params[key] = val;
+            if (key === 'region') {
+                document.querySelectorAll('.reg-btn').forEach(b => b.className = "reg-btn px-6 py-2 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-50");
+                document.getElementById(`r-${val}`).className = "reg-btn px-6 py-2 rounded-xl text-sm font-bold bg-red-600 text-white";
+            }
+            load();
+        }
+
+        function toggleShorts() {
+            params.type = params.type === 'shorts' ? 'all' : 'shorts';
+            const btn = document.getElementById('shorts-btn');
+            const icon = document.getElementById('shorts-icon');
+            if (params.type === 'shorts') {
+                btn.classList.add('border-red-500', 'bg-red-50');
+                icon.className = "fas fa-bolt text-red-600";
+            } else {
+                btn.classList.remove('border-red-500', 'bg-red-50');
+                icon.className = "fas fa-bolt text-slate-300";
+            }
+            load();
+        }
+
+        load();
+    </script>
+</body>
+
+</html>
