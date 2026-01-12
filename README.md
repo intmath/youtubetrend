@@ -43,7 +43,7 @@ npx wrangler d1 execute tube-db --local --file=./schema.sql
 
 Bash
 
-2. 로컬 DB의 테이블 목록 조회
+로컬 DB의 테이블 목록 조회
 
 npx wrangler d1 execute tube-db --local --command="SELECT name FROM sqlite_master WHERE type='table';"
 
