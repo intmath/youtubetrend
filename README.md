@@ -44,7 +44,9 @@ npx wrangler d1 execute tube-db --local --file=./schema.sql
 Bash
 
 2. 로컬 DB의 테이블 목록 조회
+
 npx wrangler d1 execute tube-db --local --command="SELECT name FROM sqlite_master WHERE type='table';"
+
 결과 확인: 목록에 Channels와 ChannelStats가 보여야 합니다. 만약 아무것도 나오지 않는다면 1번 단계에서 schema.sql 파일 경로가 틀렸거나 파일 내용이 비어 있을 수 있습니다.
 
 
@@ -102,9 +104,11 @@ npx wrangler dev --local
 Bash
 
 로컬 DB에 채널이 몇 개 있는지 확인
+
 npx wrangler d1 execute tube-db --local --command="SELECT count(*) FROM Channels;"
 
 저장된 통계 데이터 확인
+
 npx wrangler d1 execute tube-db --local --command="SELECT * FROM ChannelStats LIMIT 5;"
 
 
@@ -118,11 +122,13 @@ npx wrangler d1 execute tube-db --local --command="SELECT * FROM ChannelStats LI
 Bash
 
 npx wrangler d1 execute tube-db --local --command="SELECT title, country FROM Channels LIMIT 10;"
+
 2. 통계 데이터와 날짜가 기록되었나? (rank_date가 어떻게 찍혀있는지 확인)
 
 Bash
 
 npx wrangler d1 execute tube-db --local --command="SELECT * FROM ChannelStats LIMIT 10;"
+
 💡 만약 위 명령어 결과가 "비어있음"으로 나온다면?
 그것은 유튜브 API 호출 자체가 실패하고 있는 것입니다. .dev.vars 파일을 다시 점검해 주세요.
 
