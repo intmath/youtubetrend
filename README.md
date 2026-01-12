@@ -80,6 +80,7 @@ YOUTUBE_API_KEYS=본인의_유튜브_API_키_입력
 Bash
 
 npx wrangler dev --local
+
 터미널에 뜨는 주소(예: http://localhost:8787)를 브라우저로 엽니다.
 
 2. 국가별 데이터 수집 (영국, 브라질 포함) 처음 접속하면 데이터가 아무것도 없습니다. 아래 순서로 진행하세요.
