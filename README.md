@@ -58,12 +58,17 @@ npx wrangler d1 execute tube-db --local --command="SELECT name FROM sqlite_maste
 Ini, TOML
 
 name = "tube-trend-pro"
+
 main = "src/index.js"
+
 compatibility_date = "2026-01-12"
 
 [[d1_databases]]
+
 binding = "DB"
+
 database_name = "tube-db"
+
 database_id = "local-testing"
 
 2. .dev.vars (API 키) 로컬 테스트 시 비밀번호 역할을 합니다. 반드시 루트 폴더에 만들어주세요.
