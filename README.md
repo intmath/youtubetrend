@@ -50,6 +50,7 @@ npx wrangler d1 execute tube-db --local --command="SELECT name FROM sqlite_maste
 
 
 2단계: 환경 설정 파일 확인
+
 1. wrangler.toml (DB 바인딩) DB 이름(tube-db)과 코드 내의 이름(DB)이 일치해야 합니다.
 
 Ini, TOML
@@ -62,11 +63,13 @@ compatibility_date = "2026-01-12"
 binding = "DB"
 database_name = "tube-db"
 database_id = "local-testing"
+
 2. .dev.vars (API 키) 로컬 테스트 시 비밀번호 역할을 합니다. 반드시 루트 폴더에 만들어주세요.
 
 Plaintext
 
 YOUTUBE_API_KEYS=본인의_유튜브_API_키_입력
+
 3단계: 소스코드 저장 (src/index.js)
 제공해주신 코드를 src/index.js에 그대로 저장하세요.
 
